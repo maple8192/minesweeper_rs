@@ -41,6 +41,7 @@ impl NGMinesweeper {
         loop {
             let mut minesweeper = Minesweeper::new_random(self.width, self.height, self.bombs_num);
             if let Some(GameState::Lose) = minesweeper.open(start % self.width, start / self.width) { continue }
+            let Some(State::Revealed(0)) = minesweeper.field()[start % self.width][start / self.width] else { continue };
             if minesweeper.is_solvable() {
                 self.minesweeper = Some(minesweeper);
                 break;
