@@ -10,7 +10,8 @@ pub enum ResultState {
 
 #[derive(Default)]
 pub struct Solver {
-    hints: Vec<Hint>
+    hints: Vec<Hint>,
+    confirmed: HashSet<usize>
 }
 
 impl Solver {
@@ -21,13 +22,17 @@ impl Solver {
             if new_hint.squares().len() != 1 {
                 if new_hint.squares().len() == new_hint.bombs() {
                     for &square in new_hint.squares() {
-                        new_hints.push(Hint::new(HashSet::from([square]), 1));
+                        if !self.confirmed.contains(&square) {
+                            new_hints.push(Hint::new(HashSet::from([square]), 1));
+                        }
                     }
                     continue;
                 }
                 if new_hint.bombs() == 0 {
                     for &square in new_hint.squares() {
-                        self.add_hint(Hint::new(HashSet::from([square]), 0));
+                        if !self.confirmed.contains(&square) {
+                            self.add_hint(Hint::new(HashSet::from([square]), 0));
+                        }
                     }
                     continue;
                 }
@@ -52,6 +57,9 @@ impl Solver {
                     new_hints.push(hint.difference(&new_hint));
                     hint.clear();
                 }
+            }
+            if new_hint.squares().len() == 1 {
+                self.confirmed.insert(*new_hint.squares().iter().last().unwrap());
             }
             self.hints.push(new_hint);
             self.compact();

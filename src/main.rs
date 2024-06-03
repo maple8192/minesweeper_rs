@@ -9,7 +9,7 @@ mod minesweeper;
 mod ng_minesweeper;
 
 fn main() {
-    let mut minesweeper = NGMinesweeper::new(5, 5, 10);
+    let mut minesweeper = NGMinesweeper::new(10, 10, 10);
     show(minesweeper.field());
     while {
         input! {
